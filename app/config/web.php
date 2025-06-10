@@ -34,7 +34,7 @@ $config = [
             ],
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => \yii\caching\MemCache::class,
         ],
         'user' => [
             'identityClass' => \models\UsersModel::class,
