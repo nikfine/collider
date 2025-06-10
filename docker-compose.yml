@@ -6,7 +6,6 @@ services:
     container_name: app
     environment:
       WEB_DOCUMENT_ROOT: /var/www/html/web
-      MEMCACHED_HOST: memcached
     volumes:
       - ./app:/var/www/html
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
@@ -17,14 +16,6 @@ services:
       - app-network
     depends_on:
       - db
-      - memcached
-
-  memcached:
-    image: memcached:1.6-alpine
-    container_name: memcached
-    networks:
-      - app-network
-    command: memcached -m 128
 
   db:
     image: postgres:17
