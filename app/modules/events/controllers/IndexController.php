@@ -2,9 +2,7 @@
 
 namespace modules\events\controllers;
 
-use models\EventsModel;
-use modules\events\validators\DeleteEventsValidator;
-use modules\events\validators\EventListValidator;
+use modules\events\services\EventsService;
 use shared\rest\Controller;
 use Yii;
 use yii\db\Exception;
@@ -15,20 +13,12 @@ use yii\web\HttpException;
  */
 class IndexController extends Controller
 {
-    /**
-     * @throws HttpException
-     */
     public function actionIndex(): array
     {
-        $validator = new EventListValidator();
-        $validator->setAttributes($this->request->get());
-        if (!$validator->validate()) {
-            throw new HttpException(400, 'Invalid request');
-        }
-        return EventsModel::find()
-            ->offset(($validator->page - 1) * $validator->limit)
-            ->limit($validator->limit)
-            ->all();
+        return Yii::$app->cache->getOrSet($this->request->get(), function () {
+            return new EventsService()->list($this->request->get());
+        }, 60) ?? [];
+
     }
 
     /**
@@ -38,12 +28,7 @@ class IndexController extends Controller
      */
     public function actionCreate(): void
     {
-        $event = new EventsModel();
-        $event->setAttributes($this->request->post());
-        if (!$event->validate()) {
-            throw new HttpException(400, 'Invalid request');
-        }
-        $event->save();
+        new EventsService()->create($this->request->post());
     }
 
     /**
@@ -52,11 +37,6 @@ class IndexController extends Controller
      */
     public function actionDelete(): void
     {
-        $validator = new DeleteEventsValidator();
-        $validator->setAttributes($this->request->get());
-        if (!$validator->validate()) {
-            throw new HttpException(400, 'Invalid request');
-        }
-        EventsModel::deleteAll(['<', 'timestamp', $validator->before]);
+        new EventsService()->delete($this->request->post());
     }
 }

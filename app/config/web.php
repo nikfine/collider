@@ -64,7 +64,6 @@ $config = [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
-            'suffix' => '/',
             'rules' => [
                 'POST /event/' => 'events/index/create',
                 'GET /events/' => 'events/index',

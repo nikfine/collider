@@ -2,8 +2,9 @@
 
 namespace modules\users\controllers;
 
-use models\EventsModel;
+use modules\users\services\UsersService;
 use shared\rest\Controller;
+use Yii;
 
 /**
  * @api
@@ -15,10 +16,8 @@ class IndexController extends Controller
      */
     public function actionEvents(int $id): array
     {
-        return EventsModel::find()
-            ->where(['user_id' => $id])
-            ->orderBy(['id' => SORT_DESC])
-            ->limit(1000)
-            ->all();
+        return Yii::$app->cache->getOrSet($id, function () use ($id) {
+            return new UsersService()->events($id);
+        }, 60);
     }
 }

@@ -2,11 +2,15 @@
 - docker-compose up -d --build
 - docker exec -ti app sh -c "composer install"
 - docker exec -ti app sh -c "php yii migrate"
+- docker exec -ti app sh -c "php yii seed"
 
-## Тестирование проекта
-- docker exec -ti app sh -c "vendor/codeception/codeception/codecept run unit"
-- docker exec -ti app sh -c "vendor/bin/phpstan analyse"
+## API
+- POST /event
+- GET /events?page={page}&limit={limit}
+- DELETE /events?before={datetime}
+- GET /users/{user_id}/events
+- GET /stats?from={datetime}&to={datetime}&type={type_id}
 
-## Тестирование из Postman
-- Из таблицы users взять токен
-- Авторизация Basic Auth
+## Консоль
+- docker exec -ti app sh -c "php yii seed" - создание тестовых данных
+- docker exec -ti app sh -c "php yii seed/flush" - очистка тестовых данных

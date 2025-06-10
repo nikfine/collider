@@ -2,25 +2,40 @@
 
 namespace commands;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Yii;
 use yii\console\Controller;
+use yii\db\Exception;
 use yii\helpers\Console;
 
+/**
+ * @api
+ */
 class SeedController extends Controller
 {
-    public function actionIndex()
+    /**
+     * @throws Exception
+     */
+    public function actionIndex(): void
     {
         $start = microtime(true);
         Console::stdout("\rProcessing: ");
-        Yii::$app->db->createCommand("INSERT INTO users (\"name\") SELECT (
+        Yii::$app->db
+            ->createCommand(
+                "INSERT INTO users (\"name\") SELECT (
                         md5(random()::text)
-                    ) FROM generate_series(1, 1000000)")->execute();
-        Yii::$app->db->createCommand("INSERT INTO event_types (\"name\") SELECT (
+                    ) FROM generate_series(1, 1000000)",
+            )
+            ->execute();
+        Yii::$app->db
+            ->createCommand(
+                "INSERT INTO event_types (\"name\") SELECT (
                         md5(random()::text)
-                    ) FROM generate_series(1, 10000);")->execute();
-        Yii::$app->db->createCommand("
-                    WITH 
+                    ) FROM generate_series(1, 10000);",
+            )
+            ->execute();
+        Yii::$app->db
+            ->createCommand(
+                "WITH 
                       user_ids AS (SELECT array_agg(id) AS ids FROM users),
                       type_ids AS (SELECT array_agg(id) AS ids FROM event_types)
                     INSERT INTO events (user_id, metadata, type_id)
@@ -36,12 +51,19 @@ class SeedController extends Controller
                     FROM 
                         generate_series(1, 10000000),
                         user_ids,
-                        type_ids;")->execute();
+                        type_ids;",
+            )
+            ->execute();
         Console::endProgress(1);
         Console::output(sprintf('Seeded in %.2f seconds', microtime(true) - $start));
     }
 
-    public function actionFlush()
+    /**
+     * @return void
+     * @throws Exception
+     * @api
+     */
+    public function actionFlush(): void
     {
         $start = microtime(true);
         Console::stdout("\rProcessing: ");
