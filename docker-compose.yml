@@ -20,10 +20,11 @@ services:
       - memcached
 
   memcached:
-    image: memcached:latest
-    container_name: memcache
+    image: memcached:1.6-alpine
+    container_name: memcached
     networks:
       - app-network
+    command: memcached -m 128
 
   db:
     image: postgres:17
