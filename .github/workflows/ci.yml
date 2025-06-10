@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose up -d --build
+          docker-compose ps
+
+      - name: Install dependencies
+        run: docker exec app sh -c "composer install"
+
+      - name: Apply migrations
+        run: docker exec app sh -c "php yii migrate --interactive=0"
+
+      - name: Seed test data
+        run: docker exec app sh -c "php yii seed"
