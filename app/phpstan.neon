@@ -1,0 +1,17 @@
+parameters:
+    level: 10
+    bootstrapFiles:
+        - vendor/autoload.php
+    scanFiles:
+        - config/__autocomplete.php
+    scanDirectories:
+        - modules
+        - shared
+        - models
+    paths:
+        - modules
+        - shared
+        - models
+    excludePaths:
+        - vendor/*
+        - *.view.php

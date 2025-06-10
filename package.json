@@ -1,0 +1,12 @@
+{
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "all",
+    "phpVersion": "8.4",
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.22.4",
+    "prettier": "^3.5.3"
+  }
+}
