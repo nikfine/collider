@@ -1,6 +1,8 @@
 ## Разворачивание проекта
 - docker-compose up -d --build
 - docker exec -ti app sh -c "composer install"
+- docker exec -it app chown -R application:application /var/www/html/runtime
+- docker exec -it app chmod -R 775 /var/www/html/runtime
 - docker exec -ti app sh -c "php yii migrate"
 - docker exec -ti app sh -c "php yii seed"
 
