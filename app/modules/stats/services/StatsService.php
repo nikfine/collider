@@ -17,7 +17,7 @@ class StatsService
         $validator = new StatsValidator();
         $validator->setAttributes($requestData);
         if (!$validator->validate()) {
-            throw new HttpException(400, 'Invalid request');
+            throw new HttpException(400, json_encode($validator->errors));
         }
         $mainQuery = EventsModel::find()
             ->select([

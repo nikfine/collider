@@ -18,7 +18,7 @@ class EventsService
         $validator = new EventListValidator();
         $validator->setAttributes($requestData);
         if (!$validator->validate()) {
-            throw new HttpException(400, 'Invalid request');
+            throw new HttpException(400, json_encode($validator->errors));
         }
         return EventsModel::find()
             ->limit($validator->limit)
@@ -36,17 +36,20 @@ class EventsService
         $event = new EventsModel();
         $event->setAttributes($requestData);
         if (!$event->validate()) {
-            throw new HttpException(400, 'Invalid request');
+            throw new HttpException(400, json_encode($event->errors));
         }
         $event->save();
     }
 
+    /**
+     * @throws HttpException
+     */
     public function delete(array $requestData): void
     {
         $validator = new DeleteEventsValidator();
         $validator->setAttributes($requestData);
         if (!$validator->validate()) {
-            throw new HttpException(400, 'Invalid request');
+            throw new HttpException(400, json_encode($validator->errors));
         }
         EventsModel::deleteAll(['<', 'timestamp', $validator->before]);
     }
