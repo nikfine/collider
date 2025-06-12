@@ -23,14 +23,14 @@ class SeedController extends Controller
             ->createCommand(
                 "INSERT INTO users (\"name\") SELECT (
                         md5(random()::text)
-                    ) FROM generate_series(1, 1000000)",
+                    ) FROM generate_series(1, 100)",
             )
             ->execute();
         Yii::$app->db
             ->createCommand(
                 "INSERT INTO event_types (\"name\") SELECT (
                         md5(random()::text)
-                    ) FROM generate_series(1, 10000);",
+                    ) FROM generate_series(1, 20);",
             )
             ->execute();
         Yii::$app->db
