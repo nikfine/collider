@@ -30,7 +30,7 @@ class SeedController extends Controller
             ->createCommand(
                 "INSERT INTO event_types (\"name\") SELECT (
                         md5(random()::text)
-                    ) FROM generate_series(1, 20);",
+                    ) FROM generate_series(1, 100);",
             )
             ->execute();
         Yii::$app->db
@@ -67,7 +67,7 @@ class SeedController extends Controller
     {
         $start = microtime(true);
         Console::stdout("\rProcessing: ");
-        Yii::$app->db->createCommand("TRUNCATE TABLE users, event_types, events CASCADE")->execute();
+        Yii::$app->db->createCommand("TRUNCATE TABLE users, event_types, events RESTART IDENTITY CASCADE")->execute();
         Console::endProgress(1);
         Console::output(sprintf('Flushed in %.2f seconds', microtime(true) - $start));
     }
