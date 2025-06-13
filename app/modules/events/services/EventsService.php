@@ -31,7 +31,7 @@ class EventsService
     public function create(CreateEventValidator $validator): void
     {
         $event = new EventsModel();
-        $event->setAttributes($validator->getAttributes());
+        $event->setAttributes($validator->getAttributes(), false);
         $event->save();
     }
 

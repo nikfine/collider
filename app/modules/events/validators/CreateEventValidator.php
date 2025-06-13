@@ -10,7 +10,7 @@ class CreateEventValidator extends Model
 {
     public ?int $user_id = null;
     public ?int $type_id = null;
-    public ?string $metadata = null;
+    public ?array $metadata = null;
 
     /**
      * @return array<mixed>

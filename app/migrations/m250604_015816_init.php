@@ -9,7 +9,7 @@ class m250604_015816_init extends Migration
         $this->execute("CREATE TABLE users (
                 id SERIAL NOT NULL PRIMARY KEY,
                 name VARCHAR(50) NOT NULL,
-                created_at TIMESTAMP(0) NOT NULL DEFAULT now()
+                created_at TIMESTAMP(0) NOT NULL DEFAULT (NOW() AT TIME ZONE 'Europe/Moscow')
             );");
         $this->execute("CREATE TABLE event_types (
                 id SERIAL NOT NULL PRIMARY KEY,
@@ -19,7 +19,7 @@ class m250604_015816_init extends Migration
                 id SERIAL NOT NULL PRIMARY KEY,
                 user_id bigint NOT NULL,
                 type_id bigint NOT NULL,
-                \"timestamp\" TIMESTAMP(0) NOT NULL DEFAULT now(),
+                \"timestamp\" TIMESTAMP(0) NOT NULL DEFAULT (NOW() AT TIME ZONE 'Europe/Moscow'),
                 metadata jsonb NOT NULL,
                 CONSTRAINT type_id FOREIGN KEY (type_id)
                     REFERENCES event_types (id) MATCH SIMPLE
