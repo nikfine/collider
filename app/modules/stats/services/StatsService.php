@@ -12,10 +12,8 @@ class StatsService
     /**
      * @throws HttpException
      */
-    public function get(array $requestData): array
+    public function get(StatsValidator $validator): array
     {
-        $validator = new StatsValidator();
-        $validator->setAttributes($requestData);
         if (!$validator->validate()) {
             throw new HttpException(400, json_encode($validator->errors));
         }

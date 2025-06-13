@@ -3,10 +3,13 @@
 namespace modules\events\controllers;
 
 use modules\events\services\EventsService;
+use modules\events\validators\CreateEventValidator;
+use modules\events\validators\DeleteEventsValidator;
+use modules\events\validators\EventListValidator;
 use shared\rest\Controller;
+use shared\validators\ValidatorCreator;
 use Yii;
 use yii\db\Exception;
-use yii\web\HttpException;
 
 /**
  * @api
@@ -15,28 +18,40 @@ class IndexController extends Controller
 {
     public function actionIndex(): array
     {
-        return Yii::$app->cache->getOrSet($this->request->get(), function () {
-            return new EventsService()->list($this->request->get());
+        $validator = ValidatorCreator::fromGet(EventListValidator::class);
+        if (!$validator->validate()) {
+            return $validator->errors;
+        }
+        return Yii::$app->cache->getOrSet($this->request->get(), function () use ($validator) {
+            return new EventsService()->list($validator);
         }, 60) ?? [];
 
     }
 
     /**
      * @throws Exception
-     * @throws HttpException
      * @api
      */
-    public function actionCreate(): void
+    public function actionCreate(): array|null
     {
-        new EventsService()->create($this->request->post());
+        $validator = ValidatorCreator::fromPost(CreateEventValidator::class);
+        if (!$validator->validate()) {
+            return $validator->errors;
+        }
+        new EventsService()->create($validator);
+        return null;
     }
 
     /**
-     * @throws HttpException
      * @api
      */
-    public function actionDelete(): void
+    public function actionDelete(): array|null
     {
-        new EventsService()->delete($this->request->post());
+        $validator = ValidatorCreator::fromPost(DeleteEventsValidator::class);
+        if (!$validator->validate()) {
+            return $validator->errors;
+        }
+        new EventsService()->delete($validator);
+        return null;
     }
 }
