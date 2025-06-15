@@ -3,6 +3,7 @@
 namespace modules\stats\services;
 
 use models\EventsModel;
+use models\EventTypesModel;
 use modules\stats\validators\StatsValidator;
 use yii\db\Expression;
 use yii\web\HttpException;
@@ -18,22 +19,26 @@ class StatsService
             throw new HttpException(400, json_encode($validator->errors));
         }
         $mainQuery = EventsModel::find()
+            ->alias('e')
             ->select([
                 'total_events' => new Expression('COUNT(*)'),
-                'unique_users' => new Expression('COUNT(DISTINCT user_id)'),
+                'unique_users' => new Expression('COUNT(DISTINCT e.user_id)'),
             ])
-            ->where(['between', 'timestamp', $validator->from, $validator->to])
-            ->andWhere(['type_id' => $validator->type])
+            ->innerJoin(['t' => EventTypesModel::tableName()], 't.id = e.type_id')
+            ->where(['between', 'e.timestamp', $validator->from, $validator->to])
+            ->andWhere(['t.name' => $validator->type])
             ->asArray();
 
         $topPagesQuery = EventsModel::find()
+            ->alias('e')
             ->select([
-                'page_path' => new Expression("metadata->>'page'"),
+                'page_path' => new Expression("e.metadata->>'page'"),
                 'page_count' => new Expression('COUNT(*)'),
             ])
-            ->where(['between', 'timestamp', $validator->from, $validator->to])
-            ->andWhere(['type_id' => $validator->type])
-            ->groupBy(new Expression("metadata->>'page'"))
+            ->innerJoin(['t' => EventTypesModel::tableName()], 't.id = e.type_id')
+            ->where(['between', 'e.timestamp', $validator->from, $validator->to])
+            ->andWhere(['t.name' => $validator->type])
+            ->groupBy(new Expression("e.metadata->>'page'"))
             ->orderBy(['page_count' => SORT_DESC])
             ->limit(2)
             ->asArray();

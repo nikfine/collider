@@ -11,7 +11,7 @@
 - GET /events?page={page}&limit={limit}
 - DELETE /events?before={datetime}
 - GET /users/{user_id}/events
-- GET /stats?from={datetime}&to={datetime}&type={type_id}
+- GET /stats?from={datetime}&to={datetime}&type={type}
 
 ## Консоль
 - docker exec -ti app sh -c "php yii seed" - создание тестовых данных
